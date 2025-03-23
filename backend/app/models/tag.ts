@@ -13,5 +13,4 @@ export default class Tag extends BaseModel {
 
   @column()
   declare name: string
-
 }

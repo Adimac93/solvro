@@ -16,8 +16,6 @@ export default class extends BaseSchema {
       table.text('instructions').notNullable()
       table.text('image_url').nullable()
       table.boolean('is_alcoholic').notNullable()
-
-
     })
   }
 

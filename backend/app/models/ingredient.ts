@@ -33,5 +33,4 @@ export default class Ingredient extends BaseModel {
 
   @manyToMany(() => Cocktail, { pivotColumns: ['measure'] })
   declare cocktails: ManyToMany<typeof Cocktail>
-
 }
