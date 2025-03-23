@@ -8,12 +8,12 @@
 */
 
 import Cocktail from '#models/cocktail'
+import CocktailIngredient from '#models/cocktail_ingredient'
+import CocktailTag from '#models/cocktail_tag'
 import Ingredient from '#models/ingredient'
+import Tag from '#models/tag'
 import router from '@adonisjs/core/services/router'
 import data from '../data/data.json' with { type: 'json' }
-import CocktailIngredient from '#models/cocktail_ingredient'
-import Tag from '#models/tag'
-import CocktailTag from '#models/cocktail_tag'
 
 async function seed() {
     for (const cocktail of data) {
@@ -28,7 +28,7 @@ async function seed() {
         })
         for (const tag of cocktail.tags ?? []) {
             let dbTag = await Tag.findBy('name', tag)
-            if (dbTag == null) {
+            if (dbTag === null || dbTag === undefined) {
                 dbTag = await Tag.create({ name: tag })
             }
             await CocktailTag.create({
@@ -38,7 +38,7 @@ async function seed() {
         }
         for (const ingredient of cocktail.ingredients) {
             const dbIngredient = await Ingredient.findBy('id', ingredient.id)
-            if (dbIngredient == null) {
+            if (dbIngredient === null || dbIngredient === undefined) {
                 await Ingredient.create({
                     id: ingredient.id,
                     name: ingredient.name,
@@ -63,14 +63,21 @@ router.get('/', async () => {
     return { message: 'Data seeded' }
 })
 
-router.get('/cocktails', async ({ request, response }) => {
+router.get('/cocktails', async ({ response }) => {
     const cocktails = await Cocktail.all()
 
     response.status(200).send(cocktails)
 })
 router.post('/cocktails', async ({ request, response }) => {
-    const { name, isAlcoholic, imageUrl, instructions } = request.body()
-    const cocktail = await Cocktail.create({ name, isAlcoholic, imageUrl, instructions })
+    const { name, isAlcoholic, imageUrl, instructions, category, glass } = request.body()
+    const cocktail = await Cocktail.create({
+        name,
+        isAlcoholic,
+        imageUrl,
+        instructions,
+        category,
+        glass,
+    })
 
     response.status(201).send({ message: 'Cocktail created', cocktail })
 })
@@ -93,7 +100,7 @@ router.delete('/cocktails/:id', async ({ request, response }) => {
     response.status(200).send({ message: 'Cocktail deleted' })
 })
 
-router.get('/ingredients', async ({ request, response }) => {
+router.get('/ingredients', async ({ response }) => {
     const ingredients = await Ingredient.all()
     response.status(200).send(ingredients)
 })
@@ -126,7 +133,7 @@ router.delete('/ingredients/:id', async ({ request, response }) => {
     response.status(200).send({ message: 'Ingredient deleted' })
 })
 
-router.get('/tags', async ({ request, response }) => {
+router.get('/tags', async ({ response }) => {
     const tags = await Tag.all()
     response.status(200).send(tags)
 })
