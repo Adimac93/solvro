@@ -24,7 +24,7 @@ async function seed() {
             instructions: cocktail.instructions,
             imageUrl: cocktail.imageUrl,
             isAlcoholic: Boolean(cocktail.alcoholic),
-            glass: cocktail.glass
+            glass: cocktail.glass,
         })
         for (const tag of cocktail.tags ?? []) {
             let dbTag = await Tag.findBy('name', tag)
@@ -33,7 +33,7 @@ async function seed() {
             }
             await CocktailTag.create({
                 cocktailId: cocktail.id,
-                tagId: dbTag.id
+                tagId: dbTag.id,
             })
         }
         for (const ingredient of cocktail.ingredients) {
@@ -52,7 +52,7 @@ async function seed() {
             await CocktailIngredient.create({
                 cocktailId: cocktail.id,
                 ingredientId: ingredient.id,
-                measure: 'measure' in ingredient ? ingredient.measure : undefined
+                measure: 'measure' in ingredient ? ingredient.measure : undefined,
             })
         }
     }
@@ -99,7 +99,14 @@ router.get('/ingredients', async ({ request, response }) => {
 })
 router.post('/ingredients', async ({ request, response }) => {
     const { name, description, isAlcoholic, type, percentage, imageUrl } = request.body()
-    const ingredient = await Ingredient.create({ name, description, isAlcoholic, type, percentage, imageUrl })
+    const ingredient = await Ingredient.create({
+        name,
+        description,
+        isAlcoholic,
+        type,
+        percentage,
+        imageUrl,
+    })
     response.status(201).send({ message: 'Ingredient created', ingredient })
 })
 router.get('/ingredients/:id', async ({ request, response }) => {
@@ -118,7 +125,6 @@ router.delete('/ingredients/:id', async ({ request, response }) => {
     await ingredient.delete()
     response.status(200).send({ message: 'Ingredient deleted' })
 })
-
 
 router.get('/tags', async ({ request, response }) => {
     const tags = await Tag.all()
