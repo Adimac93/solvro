@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.timestamp('created_at')
       table.timestamp('updated_at')
 
-      table.text('measure').notNullable()
+      table.text('measure').nullable()
       table.integer('cocktail_id').unsigned().references('cocktails.id')
       table.integer('ingredient_id').unsigned().references('ingredients.id')
       table.unique(['cocktail_id', 'ingredient_id'])
